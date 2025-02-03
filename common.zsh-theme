@@ -1,7 +1,7 @@
 # https://github.com/jackharrisonsherlock/common
 
 # Prompt symbol
-COMMON_PROMPT_SYMBOL="❯"
+COMMON_PROMPT_SYMBOL="➜"
 
 # Colors
 COMMON_COLORS_HOST_ME=green
@@ -16,17 +16,17 @@ COMMON_COLORS_GIT_PROMPT_SHA=green
 COMMON_COLORS_BG_JOBS=yellow
 
 # Left Prompt
- PROMPT='$(common_host)$(common_current_dir)$(common_bg_jobs)$(common_return_status)'
+# PROMPT='$(common_host)$(common_current_dir)$(common_bg_jobs)$(common_git_status)$(common_return_status)'
 
 # Right Prompt
- RPROMPT='$(common_git_status)'
+#RPROMPT='${vim_mode}'
 
 # Enable redrawing of prompt variables
- setopt promptsubst
+setopt promptsubst
 
 # Prompt with current SHA
-# PROMPT='$(common_host)$(common_current_dir)$(common_bg_jobs)$(common_return_status)'
-# RPROMPT='$(common_git_status) $(git_prompt_short_sha)'
+PROMPT='$(host_and_user)$(common_current_dir)$(common_bg_jobs)$(common_return_status)'
+RPROMPT='$(common_git_status) ${vim_mode}'
 
 # Host
 common_host() {
@@ -39,7 +39,7 @@ common_host() {
     echo "%{$fg[$COMMON_COLORS_HOST_ME]%}$me%{$reset_color%}:"
   fi
   if [[ $AWS_VAULT ]]; then
-    echo "%{$fg[$COMMON_COLORS_HOST_AWS_VAULT]%}$AWS_VAULT%{$reset_color%} "
+    echo "%{$fg[$COMMON_COLORS_HOST_AWS_VAULT]%}$AWS_VAULT%{$reset_color%}"
   fi
 }
 
@@ -70,7 +70,7 @@ common_git_status() {
 
     local branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
     if [[ -n ${branch} ]]; then
-        message+="${message_color}${branch}%f"
+        message+=" ${message_color}${branch}%f "
     fi
 
     echo -n "${message}"
@@ -85,3 +85,24 @@ common_bg_jobs() {
   bg_status="%{$fg[$COMMON_COLORS_BG_JOBS]%}%(1j.↓%j .)"
   echo -n $bg_status
 }
+
+# Vim mode indicator
+vim_ins_mode="%{$fg[yellow]%} [INS]%{$reset_color%}"
+vim_cmd_mode="%{$fg[magenta]%} [CMD]%{$reset_color%}"
+vim_mode=$vim_ins_mode
+
+
+host_and_user() {
+  echo -n "%{$fg[green]%}$USER@$HOST:%{$reset_color%}"
+}
+
+function zle-keymap-select {
+  vim_mode="${${KEYMAP/vicmd/${vim_cmd_mode}}/(main|viins)/${vim_ins_mode}}"
+  zle reset-prompt
+}
+zle -N zle-keymap-select
+
+function zle-line-finish {
+  vim_mode=$vim_ins_mode
+}
+zle -N zle-line-finish

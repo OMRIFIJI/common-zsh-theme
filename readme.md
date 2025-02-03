@@ -1,17 +1,6 @@
 <p align="center">
   <img src="images/common.png" height="64">
-<p align="center">A simple, clean and minimal prompt.</p>
-
-<p align="center"><img src="images/screenshot.png" width="864"></p>
-
-- Current working directory
-- Hostname (Shown on remote SSH shell only)
-- AWS Vault Role
-- Background jobs
-- Current SHA (optional)
-- Exit code of last command
-- Git branch/status
-- Customisable colour scheme
+<p align="center">My fork of common zsh theme.</p>
 
 ## Installation
 
@@ -41,7 +30,3 @@ Update your `.zshrc` file with:
 ```sh
 antibody bundle jackharrisonsherlock/common
 ```
-
-## Terminal
-
-In the screenshot you see Common running in [Hyper](https://hyper.is/) with a [Custom Theme](https://github.com/jackharrisonsherlock/dotfiles/blob/master/dots/.hyper.js) and [SF Mono](https://developer.apple.com/fonts/) font.
